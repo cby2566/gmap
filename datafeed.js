@@ -9,7 +9,9 @@ var FEED = {
     payload: "",
     login: function(devid, ts)
     {
-        var url = serverURL + "notify/" + devid + "?EV=" + EVENT_LOGIN + "&TS=" + ts;
+        // http://47.90.62.114:8080/api/notify?EV=1&VIN=SIMULATOR&TS=499636551
+        // http：// <服务器主机> / api / notify / [设备ID]？EV = <事件ID>＆TS = <设备时间戳>＆VIN = <车辆ID号>
+        var url = serverURL + "api/notify/?EV=" + EVENT_LOGIN +"&VIN=SIMULATOR"+"&TS=" + ts;
         this.xhr.open("GET", url, false);
         this.xhr.send(null);
         if (this.xhr.status == 200) {

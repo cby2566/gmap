@@ -1,28 +1,54 @@
 /******************************************************************************
-* Web based vehicle tracker based on Freematics Hub
-* Developed by Stanley Huang https://www.facebook.com/stanleyhuangyc
-* Distributed under BSD license
-* Visit http://freematics.com/hub/api for Freematics Hub API reference
-* To obtain your Freematics Hub server key, contact support@freematics.com.au
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-* THE SOFTWARE.
-******************************************************************************/
+ * Web based vehicle tracker based on Freematics Hub
+ * Developed by Stanley Huang https://www.facebook.com/stanleyhuangyc
+ * Distributed under BSD license
+ * Visit http://freematics.com/hub/api for Freematics Hub API reference
+ * To obtain your Freematics Hub server key, contact support@freematics.com.au
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ ******************************************************************************/
 
 onResize();
+var map;
+// console.log(map);
 
+
+function initMap() {
+    console.log(1);
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 11,
+        center: new google.maps.LatLng(22.3, 114.08),
+        // mapTypeId: 'terrain'
+    });
+}
 $(function () {
+    // console.log(1);
+    // var map;
+    // function initMap() {
+    //     console.log(1);
+    initMap()
+    //     map = new google.maps.Map(document.getElementById('map'), {
+    //         zoom: 11,
+    //         center: new google.maps.LatLng(22.3, 114.08),
+    //         // mapTypeId: 'terrain'
+    //     });
+    // }
+    // OSMAP.init('map', 22.3, 114.15, 11);
     $(document).ready(function () {
-		USER.load("DASH.load()");
+        USER.load("DASH.load()");
 
-        self.setInterval(function () {
-            if (DASH.curLocation && OSMAP.map) OSMAP.setCenter(DASH.curLocation);
-        }, MAP_CENTERING_INTERVAL);
+        // self.setInterval(function () {
+        //     if (map) {
+        //         USER.load("DASH.load()");
+        //     }
+        //     // OSMAP.setCenter(DASH.curLocation);
+        // }, MAP_CENTERING_INTERVAL);
 
         /*
 		var options = {
@@ -47,21 +73,20 @@ if (window.require) {
     }
 }
 
-function onResize()
-{
+function onResize() {
     var height = window.innerHeight - document.getElementById("list").offsetHeight - 8;
     var width = window.innerWidth - document.getElementById("sidebar").offsetWidth - 2;
     //if (mapHeight < 300) mapHeight = 300;
     document.getElementById("container").style.height = height + "px";
-    document.getElementById("map").style.height = height * 2 / 3 + "px";
+    document.getElementById("map").style.height = height + "px";
     document.getElementById("map").style.width = width + "px";
-    document.getElementById("chart").style.height = height / 3 + "px";
-    document.getElementById("chart").style.width = width+ "px";
+    // document.getElementById("chart").style.height = height  + "px";
+    // document.getElementById("chart").style.width = width+ "px";
 }
 
 var DASH = {
-	xhr: new XMLHttpRequest(),
-	dataSlideIndex: [0, 1],
+    xhr: new XMLHttpRequest(),
+    dataSlideIndex: [0, 1],
     deviceID: null,
     curLocation: null,
     data: null,
@@ -69,70 +94,60 @@ var DASH = {
     chartPID: null,
     chartDataTick: 0,
     selectedPID: 269,
-	lastDataCount: null,
-    parked: null,
-    selectPID: function (pid)
-    {
+    lastDataCount: null,
+    selectPID: function (pid) {
         this.selectedPID = pid;
     },
-	setText: function(name, text)
-	{
+    setText: function (name, text) {
         document.getElementById("data_" + name).innerText = text;
     },
-    setClass: function (name, className)
-    {
+    setClass: function (name, className) {
         document.getElementById("data_" + name).className = className;
     },
-	setHTML: function(name, html)
-	{
-		document.getElementById("data_" + name).innerHTML = html;
-	},
-	setTempBar: function(name, temp)
-	{
-		if (temp < 0) temp = 0;
-		if (temp > 80) temp = 80;
-		var i = Math.floor((temp / 80) * 45) * 34;
-		var img = document.getElementById("data_" + name);
-		img.style.marginLeft = (-i) + "px";
-		img.title = temp + "C";
-	},
-	togglePID: function (num)
-	{
-		if (this.data.length > num) {
-			if (++this.dataSlideIndex[num] >= this.data.length) this.dataSlideIndex[num] = 0;
-			if (this.dataSlideIndex[num] == this.dataSlideIndex[1 - num]) {
-				if (++this.dataSlideIndex[num] >= this.data.length) this.dataSlideIndex[num] = 0;
-			}
-			this.updatePID(num);
-		}
-	},
-	getPIDValue: function (pid)
-	{
-		for (var i = 0; i < this.data.length; i++) {
-			if (this.data[i][0] == pid) {
-				return PID.normalize(pid, this.data[i][1]);
-			}
-		}
-		return null;
-	},
-	updatePID: function(num)
-	{
-		var dataIndex = this.dataSlideIndex[num];
+    setHTML: function (name, html) {
+        document.getElementById("data_" + name).innerHTML = html;
+    },
+    setTempBar: function (name, temp) {
+        if (temp < 0) temp = 0;
+        if (temp > 80) temp = 80;
+        var i = Math.floor((temp / 80) * 45) * 34;
+        var img = document.getElementById("data_" + name);
+        img.style.marginLeft = (-i) + "px";
+        img.title = temp + "C";
+    },
+    togglePID: function (num) {
+        if (this.data.length > num) {
+            if (++this.dataSlideIndex[num] >= this.data.length) this.dataSlideIndex[num] = 0;
+            if (this.dataSlideIndex[num] == this.dataSlideIndex[1 - num]) {
+                if (++this.dataSlideIndex[num] >= this.data.length) this.dataSlideIndex[num] = 0;
+            }
+            this.updatePID(num);
+        }
+    },
+    getPIDValue: function (pid) {
+        for (var i = 0; i < this.data.length; i++) {
+            if (this.data[i][0] == pid) {
+                return PID.normalize(pid, this.data[i][1]);
+            }
+        }
+        return null;
+    },
+    updatePID: function (num) {
+        var dataIndex = this.dataSlideIndex[num];
         if (dataIndex < this.data.length) {
             var pid = this.data[dataIndex][0];
             var value = this.data[dataIndex][1];
             this.setText("pid_value" + num.toString(), PID.normalize(pid, value));
-			this.setText("pid_name" + num.toString(), PID.getNameUnit(pid));
-		}
+            this.setText("pid_name" + num.toString(), PID.getNameUnit(pid));
+        }
     },
-    updateUserInfo: function (info, devid)
-    {
-		if (!USER.info) {
-			document.getElementById("info").innerHTML = devid ? ("DEVICE: " + devid) : "";
-			return;
-		}
+    updateUserInfo: function (info, devid) {
+        if (!USER.info) {
+            document.getElementById("info").innerHTML = devid ? ("DEVICE: " + devid) : "";
+            return;
+        }
         var s = "<select onchange='USER.goDash(this.value)'>";
-		var found = false;
+        var found = false;
         for (var i = 0; i < info.devid.length; i++) {
             s += "<option value=\"" + info.devid[i] + "\"";
             if (info.devid[i] == devid) {
@@ -141,9 +156,9 @@ var DASH = {
             }
             s += ">" + info.devid[i] + "</option>";
         }
-		if (!found) {
-			s += "<option value=\"" + devid + "\" selected>" + devid + "</option>";
-		}
+        if (!found) {
+            s += "<option value=\"" + devid + "\" selected>" + devid + "</option>";
+        }
         s += "</select><input type='button' onclick='USER.goNextDash(previousSibling.value)' value='Switch'></input>";
         document.getElementById("info").innerHTML = s;
     },
@@ -167,10 +182,9 @@ var DASH = {
         if (index[0] >= 0) this.dataSlideIndex[0] = index[0];
         if (index[1] >= 0) this.dataSlideIndex[1] = index[1];
     },
-	update: function (ch)
-	{
-        this.parked = ch.stats.parked || ch.stats.age.data > TRIP_END_TIMEOUT;
-        if (this.parked) {
+    update: function (ch) {
+        var parked = ch.stats.parked || ch.stats.age.data > TRIP_END_TIMEOUT;
+        if (parked) {
             this.setText("elapsed", getHHMM(Math.floor(ch.stats.age.data / 1000)));
             var offline = ch.stats.age.ping > DEVICE_OFFLINE_TIMEOUT;
             if (offline) {
@@ -193,7 +207,7 @@ var DASH = {
             this.setText("delay", ch.stats.age.data);
             this.setText("recv", Math.floor(ch.stats.recv / 1024));
         }
-		
+
         this.data = ch.live;
 
         var deviceTemp = this.getPIDValue(PID.DEVICE_TEMP);
@@ -215,110 +229,136 @@ var DASH = {
         }
         document.getElementById("grid").innerHTML = s;
 
-		if (this.lastDataCount != this.data.length) {
-			s = "<hr/>Chart Data<br/><select id='chartPIDselect' onchange='DASH.selectPID(parseInt(value))'>";
-			for (var n = 0; n < this.data.length; n++) {
-				var pid = this.data[n][0];
-				if (!PID.illustratable(pid)) continue;
-				s += "<option value='" + pid + "'";
-				if (pid == this.selectedPID) s += " selected";
-				s += ">" + PID.getName(pid) + "</option>";
-			}
-			s += "</select>";
-			document.getElementById("tools").innerHTML = s;
-			this.lastDataCount = this.data.length;
-			this.selectedPID = parseInt(document.getElementById("chartPIDselect").value);
-		}
+        if (this.lastDataCount != this.data.length) {
+            s = "<hr/>Chart Data<br/><select id='chartPIDselect' onchange='DASH.selectPID(parseInt(value))'>";
+            for (var n = 0; n < this.data.length; n++) {
+                var pid = this.data[n][0];
+                if (!PID.illustratable(pid)) continue;
+                s += "<option value='" + pid + "'";
+                if (pid == this.selectedPID) s += " selected";
+                s += ">" + PID.getName(pid) + "</option>";
+            }
+            s += "</select>";
+            document.getElementById("tools").innerHTML = s;
+            this.lastDataCount = this.data.length;
+            this.selectedPID = parseInt(document.getElementById("chartPIDselect").value);
+        }
 
-	    // update map
+        // update map
         var lat = this.getPIDValue(PID.GPS.LATITUDE);
         var lng = this.getPIDValue(PID.GPS.LONGITUDE);
         if (lat != null && lng != null && lat != 0 && lng != 0) {
             if (!OSMAP.map) OSMAP.init("map", lat, lng, 15);
-		    //if (devid) OSMAP.setTooltip(0, devid);
+            //if (devid) OSMAP.setTooltip(0, devid);
             if (!this.curLocation || this.curLocation[0] != lat || this.curLocation[1] != lng) {
                 this.curLocation = [lat, lng];
                 OSMAP.setMarker(0, this.curLocation);
                 OSMAP.setCenter(this.curLocation);
             }
         }
-	},
-	load: function()
-    {
-		this.updateUserInfo(USER.info, USER.devid);
-		this.lastDataCount = null;
-		// load channel data
-		this.xhr.onreadystatechange = function() {
-			if (this.readyState != 4) return;
-			if (this.status != 200) {
-				if (this.status) {
-					alert("Server under maintenance (status: " + this.status + ")");
-				}
-				return;
-			}
-            var chdata = JSON.parse(this.responseText);
-            if (chdata && chdata.id) {
-                DASH.deviceID = chdata.devid;
-                self.setTimeout("DASH.showChart()", 0);
-            } else {
-                alert("Not an active device. Please check if your device is working or the device ID is correct.");
-            }
-		};
-        var url = serverURL + "channels/" + USER.devid;
-		this.xhr.open('GET', url, true);    
-		this.xhr.send(null);
     },
-    showChart: function()
-    {
-        var pid = this.selectedPID;
-        this.xhr.onreadystatechange = function() {
-            if (this.readyState != 4 || this.status != 200) {
-                return;
-            }
-            
-            var pull = JSON.parse(this.responseText);
+    load: function () {
+        $.ajax({
+            url: serverURL + "/api/channels",
+            // data: {
+            //     "name": "张三"
+            // }, //请求的数据，以json格式
+            dataType: "json", //返回的数据类型
+            type: "get", //默认为get
+            success: function (data) {
+                // console.log(data.channels);
+                if (data && data.channels) {
+                    self.setTimeout(DASH.showChart(data), 0);
+                } else {
+                    alert("Not an active device. Please check if your device is working or the device ID is correct.");
+                }
 
-            if (pull.error) {
-                alert(pull.error);
-                return;
+                //成功方法，返回值用data接收
+            },
+            error: function (e) {
+                //失败方法，错误信息用e接收
             }
-                
-            var mydata = [];
-            // load history data;
-            var d = new Date();
-            var tm = d.getTime() - d.getTimezoneOffset() * 60000;
-            var lastDataTick = pull.stats.devtick;
-            for (var i = 0; i < pull.data.length; i++) {
-                var value = pull.data[i][2];
-                var ts = pull.data[i][0];
-                mydata.push({
-                    x: tm - (lastDataTick - ts),
-                    y: PID.toNumber(pid, value)
-                });
-            }
-            // create chart with loaded data
-            var chart = CreateChart(
-                "chart", PID.getName(pid), "#808080",
-                PID.getUnit(pid), PID.getNameUnit(pid), 100, mydata);
-            // start receiving
-            chart.series[0].setVisible(true, true);
-            DASH.chart = chart;
-            DASH.chartPID = pid;
-            DASH.chartDataTick = lastDataTick;
-            DASH.update(pull);
-            self.setTimeout("DASH.updateData()", DATA_FETCH_INTERVAL);
-            //requestData();
-        };
+        });
+        // this.updateUserInfo(USER.info, USER.devid);
+        // this.lastDataCount = null;
+        // load channel data
+        // this.xhr.onreadystatechange = function () {
+        //     if (this.readyState != 4) return;
+        //     if (this.status != 200) {
+        //         if (this.status) {
+        //             alert("Server under maintenance (status: " + this.status + ")");
+        //         }
+        //         return;
+        //     }
+        //     var chdata = JSON.parse(this.responseText);
 
-        this.chart = null;
-        document.getElementById("chart").innerHTML = "";
-		var rollback = this.parked ? ROLLBACK_TIME_PARKED : ROLLBACK_TIME;
-        this.xhr.open('GET', serverURL + "pull/" + this.deviceID + "?pid=" + pid + "&rollback=" + rollback, true);
-        this.xhr.send(null);
+
+        //     if (chdata && chdata.channels) {
+        //         // DASH.deviceID = chdata.devid;
+        //         // var yyy=[...chdata]
+        //         // console.log(1)
+        //         self.setTimeout(DASH.showChart(chdata), 0);
+        //     } else {
+        //         alert("Not an active device. Please check if your device is working or the device ID is correct.");
+        //     }
+        // };
+        // var url = serverURL + "/api/channels";
+        // this.xhr.open('GET', url, true);
+        // this.xhr.send(null);
     },
-    updateData: function()
-    {
-        this.xhr.onreadystatechange = function() {
+    showChart: function (data) {
+        // var pid = this.selectedPID;
+        // console.log(data.channels);
+
+        for (var i = 0; i < data.channels.length; i++) {
+            // var id = idArr[i];
+            // var url = getUrl(hqData.api, id); //获取URL
+            // let res = await $.ajax({
+            //     type: "GET",
+            //     url: serverURL + "/api/channels",
+            //     // dataType: "jsonp",
+            //     // jsonp: 'cb'
+
+            // });
+            console.log(i);
+            $.ajax({
+                url: serverURL + "/api/channels",
+                // data: {
+                //     "name": "张三"
+                // }, //请求的数据，以json格式
+                dataType: "json", //返回的数据类型
+                type: "get", //默认为get
+                success: function (data) {
+                    console.log(data.channels);
+                    //成功方法，返回值用data接收
+                },
+                error: function (e) {
+                    //失败方法，错误信息用e接收
+                }
+            });
+
+            // this.xhr.onreadystatechange = function () {
+
+            //     // console.log(this.readyState, this.status);
+
+            //     // if (this.readyState != 4 || this.status != 200) {
+            //     //     return;
+            //     // }
+            //     var pull = JSON.parse(this.responseText);
+
+            //     // if (pull.error) {
+            //     //     alert(pull.error);
+            //     //     return;
+            //     // }
+            // };
+            // this.xhr.open('GET', serverURL + 'api/get/' + data.channels[i].devid, true);
+            // this.xhr.send(null);
+        }
+
+
+    },
+    updateData: function () {
+        this.xhr.onreadystatechange = function () {
             if (this.readyState != 4) return;
             if (this.status != 200) {
                 if (this.status) {
@@ -351,8 +391,8 @@ var DASH = {
         }
         if (!this.chartPID || !this.chart) return;
         var url = serverURL + "pull/" + this.deviceID + "?pid=" + DASH.chartPID + "&ts=" + (this.chartDataTick + 1);
-        this.xhr.open('GET', url, true);    
+        this.xhr.open('GET', url, true);
         this.xhr.send(null);
     },
-    
+
 };

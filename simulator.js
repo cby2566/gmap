@@ -30,7 +30,7 @@ var SIM = {
 		var options = {
             enableHighAccuracy: true,
             timeout: 10000,
-            maximumAge: 10000,
+            maximumAge: 10000,origin
         };
         navigator.geolocation.getCurrentPosition(function (pos) { SIM.loc = pos.coords; }, null, options);
 
@@ -74,6 +74,7 @@ var SIM = {
     },
     login: function()
     {
+        // http：// <服务器主机> / api / notify / [设备ID]？EV = <事件ID>＆TS = <设备时间戳>＆VIN = <车辆ID号>
         var devid = document.getElementById("devid").value;
         var ts = document.getElementById("ts").value;
         if (FEED.login(devid, ts)) {
