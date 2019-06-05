@@ -8,5 +8,5 @@ const TRIP_END_TIMEOUT = 180000;
 const DEVICE_OFFLINE_TIMEOUT = 910000;
 const MAP_CENTERING_INTERVAL = 5000;
 const STOP_TIME_MIN = 30; /* seconds */
-const serverURL = "/gmap/"
+const serverURL = "/gmap/";
 // const serverURL = window.require ? "http://localhost:8080/api/" : (window.location.href.indexOf("localhost") > 0 ? "/api/" : "/hub/api/");
